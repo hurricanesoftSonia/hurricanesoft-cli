@@ -1,0 +1,2 @@
+[console_scripts]
+hs = hurricanesoft_cli.main:main

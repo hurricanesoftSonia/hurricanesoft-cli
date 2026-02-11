@@ -45,6 +45,10 @@ def main():
         print_tools()
         return
 
+    if tool == 'config':
+        handle_config(args.args)
+        return
+
     if tool not in TOOLS:
         print(f"❌ 未知工具: {tool}")
         print(f"可用工具: {', '.join(sorted(TOOLS.keys()))}")
@@ -92,6 +96,32 @@ def print_tools():
         except ImportError:
             status = '❌'
         print(f"  {status} {name:<12} {desc}")
+
+
+def handle_config(args):
+    """Handle hs config subcommands."""
+    from hurricanesoft_cli import config
+
+    if not args or args[0] == 'show':
+        config.show_config()
+    elif args[0] == 'init':
+        config.init_config(interactive=True)
+    elif args[0] == 'get' and len(args) >= 2:
+        val = config.get(args[1])
+        if val is not None:
+            print(val)
+        else:
+            print(f"❌ Key not found: {args[1]}")
+    elif args[0] == 'set' and len(args) >= 3:
+        val = config.set_value(args[1], ' '.join(args[2:]))
+        print(f"✅ {args[1]} = {val}")
+    else:
+        print("用法:")
+        print("  hs config show           顯示設定")
+        print("  hs config init           設定精靈")
+        print("  hs config get <key>      取得設定值")
+        print("  hs config set <key> <v>  設定值")
+        print("  key 格式: database.pg_host, lids.use_lids, etc.")
 
 
 if __name__ == '__main__':
