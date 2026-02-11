@@ -49,6 +49,12 @@ def main():
         handle_config(args.args)
         return
 
+    if tool == 'migrate':
+        from hurricanesoft_cli.migrate import main as migrate_main
+        sys.argv = ['hs migrate'] + args.args
+        migrate_main()
+        return
+
     if tool not in TOOLS:
         print(f"❌ 未知工具: {tool}")
         print(f"可用工具: {', '.join(sorted(TOOLS.keys()))}")
