@@ -17,31 +17,54 @@ TOOL_TABLES = {
     'todo': {
         'module': 'todotool',
         'prefix': 'todo',
-        'tables': ['users', 'todos', 'audit_log'],
+        # SQLite table → PG table (explicit mapping for mismatched names)
+        'table_map': {
+            'users': 'todo_users',
+            'todos': 'todo_todos',
+            'todo_tags': 'todo_tags',
+            'todo_history': 'todo_history',
+        },
         'db_file': 'todo.db',
     },
     'memo': {
         'module': 'memotool',
         'prefix': 'memo',
-        'tables': ['users', 'memos'],
+        'table_map': {
+            'users': 'memo_users',
+            'memos': 'memo_memos',
+        },
         'db_file': 'memo.db',
     },
     'account': {
         'module': 'accountool',
         'prefix': 'acct',
-        'tables': ['users', 'categories', 'entries'],
+        'table_map': {
+            'users': 'acct_users',
+            'categories': 'acct_categories',
+            'transactions': 'transactions',
+            'reminders': 'reminders',
+        },
         'db_file': 'accounts.db',
     },
     'announce': {
         'module': 'announcetool',
         'prefix': 'ann',
-        'tables': ['users', 'contacts', 'announcements', 'acks'],
+        'table_map': {
+            'users': 'ann_users',
+            'contacts': 'ann_contacts',
+            'announcements': 'ann_announcements',
+            'recipients': 'recipients',
+        },
         'db_file': 'announce.db',
     },
     'msg': {
         'module': 'msgtool',
         'prefix': 'msg',
-        'tables': ['users', 'messages', 'mentions'],
+        'table_map': {
+            'users': 'msg_users',
+            'messages': 'msg_messages',
+            'mentions': 'msg_mentions',
+        },
         'db_file': 'msg.db',
     },
 }
@@ -155,13 +178,12 @@ def migrate_tool(tool_name, sqlite_path=None, dry_run=False):
     sqlite_conn.row_factory = sqlite3.Row
 
     total = 0
-    for table in info['tables']:
-        pg_table = f"{info['prefix']}_{table}"
+    for sqlite_table, pg_table in info['table_map'].items():
         try:
-            count = migrate_table(sqlite_conn, pg_conn, table, pg_table, dry_run)
+            count = migrate_table(sqlite_conn, pg_conn, sqlite_table, pg_table, dry_run)
             total += count
         except Exception as e:
-            print(f"  ❌ {table}: {e}")
+            print(f"  ❌ {sqlite_table}: {e}")
 
     sqlite_conn.close()
     if pg_conn:
