@@ -5,6 +5,29 @@ import sys
 import os
 import subprocess
 
+# Ensure shiv/zipapp bundled site-packages are on sys.path.
+# When running from a shiv archive, the hurricanesoft_cli package is importable
+# but sibling packages (announcetool, msgtool, etc.) may not be if the shiv
+# cache site-packages dir isn't explicitly in sys.path.
+def _fix_shiv_path():
+    """Add the shiv cache site-packages to sys.path if needed."""
+    try:
+        cli_init = os.path.dirname(os.path.abspath(__file__))
+        # Walk up to find site-packages (shiv layout: .shiv/<hash>/site-packages/<pkg>/)
+        parent = os.path.dirname(cli_init)
+        if os.path.basename(parent) == 'site-packages':
+            if parent not in sys.path:
+                sys.path.insert(0, parent)
+            return
+        # Also check: maybe we're in a zip — look for .shiv in path
+        for p in sys.path:
+            if '.shiv' in p and 'site-packages' in p and p not in sys.path:
+                sys.path.insert(0, p)
+    except Exception:
+        pass
+
+_fix_shiv_path()
+
 from hurricanesoft_cli import __version__
 
 # Tool registry: name → (module, description)
