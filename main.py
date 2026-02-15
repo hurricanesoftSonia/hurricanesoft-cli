@@ -40,6 +40,7 @@ TOOLS = {
     'announce':  ('announcetool.cli',  '📢 公告系統'),
     'health':    ('healthtool.cli',    '🏥 系統監控'),
     'auth':      ('hurricanesoft_auth.cli', '🔐 LIDS 認證'),
+    'contacthub': ('contacthub.cli',   '📞 聯絡人管理'),
 }
 
 
