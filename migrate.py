@@ -22,7 +22,7 @@ TOOL_TABLES = {
             'users': 'todo_users',
             'todos': 'todo_todos',
             'todo_tags': 'todo_tags',
-            'todo_history': 'todo_history',
+            'audit_log': 'todo_audit_log',  # 修正：todo_history → audit_log
         },
         'db_file': 'todo.db',
     },
@@ -41,8 +41,8 @@ TOOL_TABLES = {
         'table_map': {
             'users': 'acct_users',
             'categories': 'acct_categories',
-            'transactions': 'transactions',
-            'reminders': 'reminders',
+            'entries': 'acct_entries',      # 修正：transactions → entries
+            'reminders': 'acct_reminders',   # 修正：加上 prefix
         },
         'db_file': 'accounts.db',
     },
@@ -53,7 +53,7 @@ TOOL_TABLES = {
             'users': 'ann_users',
             'contacts': 'ann_contacts',
             'announcements': 'ann_announcements',
-            'recipients': 'recipients',
+            'recipients': 'ann_recipients',  # 修正：加上 prefix
         },
         'db_file': 'announce.db',
     },
@@ -66,6 +66,18 @@ TOOL_TABLES = {
             'mentions': 'msg_mentions',
         },
         'db_file': 'msg.db',
+    },
+    'contacthub': {
+        'module': 'contacthub',
+        'prefix': 'contact',
+        'table_map': {
+            'users': 'contact_users',
+            'contacts': 'contact_contacts',
+            'groups': 'contact_groups',
+            'group_members': 'contact_group_members',
+            'import_logs': 'contact_import_logs',
+        },
+        'db_file': 'contacts.db',
     },
 }
 
